@@ -174,7 +174,7 @@ def pregunta_07():
             d[row[1]].append(row[0]) 
     l = []
     [l.append((int(k),v)) for k,v in d.items()]
-    return l                           
+    return sorted(l)                           
 
 def pregunta_08():
     """
