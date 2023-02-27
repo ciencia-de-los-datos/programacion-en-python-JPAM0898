@@ -173,7 +173,7 @@ def pregunta_07():
         else:
             d[row[1]].append(row[0]) 
     l = []
-    [l.append((k,v)) for k,v in d.items()]
+    [l.append((int(k),v)) for k,v in d.items()]
     return l                           
 
 def pregunta_08():
@@ -200,9 +200,9 @@ def pregunta_08():
         else:
             d[row[1]].append(row[0]) 
     l = []
-    [l.append((k,sorted(set(v)))) for k,v in d.items()]
+    [l.append((int(k),sorted(set(v)))) for k,v in d.items()]
     return sorted(l)
-   
+
 def pregunta_09():
     """
     Retorne un diccionario que contenga la cantidad de registros en que aparece cada clave de la columna 5.
