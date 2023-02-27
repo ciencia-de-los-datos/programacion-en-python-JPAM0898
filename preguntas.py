@@ -4,31 +4,31 @@ Laboratorio de Programación Básica en Python para Manejo de Datos
 
 Este archivo contiene las preguntas que se van a realizar en el laboratorio.
 
-No puede utilizar pandas, numpy o scipy. Se debe utilizar solo las funciones de python
-básicas.
+No puede utilizar pandas, numpy o scipy. Se debe utilizar solo las funciones de python básicas.
 
 Utilice el archivo `data.csv` para resolver las preguntas.
 
 
 """
+with open("data.csv", "r") as file:
 
+    lines = file.readlines()
+
+    rows = [[value for value in line.split("\t")] for line in lines]
 
 def pregunta_01():
     """
     Retorne la suma de la segunda columna.
-
-    Rta/
-    214
-
+    Rta/214 
     """
-    return
-
+    add = 0
+    for row in rows:
+        add += int(row[1])
+    return add
 
 def pregunta_02():
     """
-    Retorne la cantidad de registros por cada letra de la primera columna como la lista
-    de tuplas (letra, cantidad), ordendas alfabéticamente.
-
+    Retorne la cantidad de registros por cada letra de la primera columna como la lista de tuplas (letra, cantidad), ordendas alfabéticamente.
     Rta/
     [
         ("A", 8),
@@ -37,16 +37,19 @@ def pregunta_02():
         ("D", 6),
         ("E", 14),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        for value in row[0]:
+            if value not in d:
+                d[value] = 1
+            else:
+                d[value] += 1
+    return  [(key, d[key]) for key in sorted(d)]
 
 def pregunta_03():
     """
-    Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
-    de tuplas (letra, suma) ordendas alfabeticamente.
-
+    Retorne la suma de la columna 2 por cada letra de la primera columna como una lista de tuplas (letra, suma) ordendas alfabeticamente.
     Rta/
     [
         ("A", 53),
@@ -55,16 +58,19 @@ def pregunta_03():
         ("D", 31),
         ("E", 67),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        for value in row[0]:
+            if value not in d:
+                d[value] = int(row[1])
+            else:
+                d[value] += int(row[1])
+    return  [(key, d[key]) for key in sorted(d)]
 
 def pregunta_04():
     """
-    La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de
-    registros por cada mes, tal como se muestra a continuación.
-
+    La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de registros por cada mes, tal como se muestra a continuación.
     Rta/
     [
         ("01", 3),
@@ -80,16 +86,19 @@ def pregunta_04():
         ("11", 2),
         ("12", 3),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        for value in [(row[2][5:7])]:
+            if value not in d:
+                d[value] = 1
+            else:
+                d[value] += 1
+    return  [(key, d[key]) for key in sorted(d)]
 
 def pregunta_05():
     """
-    Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada
-    letra de la columa 1.
-
+    Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada letra de la columa 1.
     Rta/
     [
         ("A", 9, 2),
@@ -98,18 +107,21 @@ def pregunta_05():
         ("D", 8, 3),
         ("E", 9, 1),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        if row[0] not in d:
+            d[row[0]] = [int(row[1])]
+        else:
+            d[row[0]].append(int(row[1]))
+    l = []
+    [l.append((k,max(v),min(v))) for k,v in d.items()]
+    l.sort()
+    return l
 
 def pregunta_06():
     """
-    La columna 5 codifica un diccionario donde cada cadena de tres letras corresponde a
-    una clave y el valor despues del caracter `:` corresponde al valor asociado a la
-    clave. Por cada clave, obtenga el valor asociado mas pequeño y el valor asociado mas
-    grande computados sobre todo el archivo.
-
+    La columna 5 codifica un diccionario donde cada cadena de tres letras corresponde a una clave y el valor despues del caracter `:` corresponde al valor asociado a la clave. Por cada clave, obtenga el valor asociado mas pequeño y el valor asociado mas grande computados sobre todo el archivo.
     Rta/
     [
         ("aaa", 1, 9),
@@ -123,17 +135,23 @@ def pregunta_06():
         ("iii", 0, 9),
         ("jjj", 5, 17),
     ]
-
     """
-    return
-
+    d = {}
+    l = []
+    [[l.append(value.replace(' ','').split(':')) for value in row[4].strip('\n').split(',')] for row in rows]
+    for k,v in l:
+        if k in d:
+            d[k].append(int(v))
+        else:
+            d[k] = [int(v)]
+    l2 = []
+    [l2.append((k,min(v),max(v))) for k,v in d.items()]
+    l2.sort()
+    return l2
 
 def pregunta_07():
     """
-    Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
-    valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1)
-    a dicho valor de la columna 2.
-
+    Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1) a dicho valor de la columna 2.
     Rta/
     [
         (0, ["C"]),
@@ -147,18 +165,20 @@ def pregunta_07():
         (8, ["E", "D", "E", "A", "B"]),
         (9, ["A", "B", "E", "A", "A", "C"]),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        if row[1] not in d:
+            d[row[1]] = [row[0]]
+        else:
+            d[row[1]].append(row[0]) 
+    l = []
+    [l.append((int(k),v)) for k,v in d.items()]
+    return sorted(l)                           
 
 def pregunta_08():
     """
-    Genere una lista de tuplas, donde el primer elemento de cada tupla contiene  el valor
-    de la segunda columna; la segunda parte de la tupla es una lista con las letras
-    (ordenadas y sin repetir letra) de la primera  columna que aparecen asociadas a dicho
-    valor de la segunda columna.
-
+    Genere una lista de tuplas, donde el primer elemento de cada tupla contiene  el valor de la segunda columna; la segunda parte de la tupla es una lista con las letras (ordenadas y sin repetir letra) de la primera  columna que aparecen asociadas a dicho valor de la segunda columna.
     Rta/
     [
         (0, ["C"]),
@@ -172,16 +192,20 @@ def pregunta_08():
         (8, ["A", "B", "D", "E"]),
         (9, ["A", "B", "C", "E"]),
     ]
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        if row[1] not in d:
+            d[row[1]] = [row[0]]
+        else:
+            d[row[1]].append(row[0]) 
+    l = []
+    [l.append((int(k),sorted(set(v)))) for k,v in d.items()]
+    return sorted(l)
 
 def pregunta_09():
     """
-    Retorne un diccionario que contenga la cantidad de registros en que aparece cada
-    clave de la columna 5.
-
+    Retorne un diccionario que contenga la cantidad de registros en que aparece cada clave de la columna 5.
     Rta/
     {
         "aaa": 13,
@@ -195,15 +219,14 @@ def pregunta_09():
         "iii": 18,
         "jjj": 18,
     }
-
     """
-    return
-
+    l = []
+    [[l.append((value.replace(' ','').split(':'))[0]) for value in row[4].strip('\n').split(',')] for row in rows]
+    return {key: l.count(key) for key in sorted(l)}
 
 def pregunta_10():
     """
-    Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
-    cantidad de elementos de las columnas 4 y 5.
+    Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la cantidad de elementos de las columnas 4 y 5.
 
     Rta/
     [
@@ -215,17 +238,14 @@ def pregunta_10():
         ("E", 2, 3),
         ("E", 3, 3),
     ]
-
-
     """
-    return
-
-
+    l = []
+    [l.append((row[0], len(row[3].strip('\n').split(',')), len(row[4].strip('\n').split(',')))) for row in rows]
+    return l
+                 
 def pregunta_11():
     """
-    Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la
-    columna 4, ordenadas alfabeticamente.
-
+    Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la columna 4, ordenadas alfabeticamente.
     Rta/
     {
         "a": 122,
@@ -236,17 +256,19 @@ def pregunta_11():
         "f": 134,
         "g": 35,
     }
-
-
     """
-    return
-
+    d = {}
+    for row in rows:
+        for value in row[3].strip('\n').split(','):
+            if value not in d:
+                d[value] = int(row[1])
+            else:
+                d[value] += int(row[1])
+    return  {key: d[key] for key in sorted(d)}
 
 def pregunta_12():
     """
-    Genere un diccionario que contengan como clave la columna 1 y como valor la suma de
-    los valores de la columna 5 sobre todo el archivo.
-
+    Genere un diccionario que contengan como clave la columna 1 y como valor la suma de los valores de la columna 5 sobre todo el archivo.
     Rta/
     {
         'A': 177,
@@ -255,6 +277,13 @@ def pregunta_12():
         'D': 136,
         'E': 324
     }
-
     """
-    return
+    d = {}
+    for row in rows:
+        for value in row[4].strip('\n').split(','):
+            if row[0] not in d:
+                d[row[0]] = int(value.replace(' ','').split(':')[1])
+            else:
+                d[row[0]] += int(value.replace(' ','').split(':')[1])
+    return  {key: d[key] for key in sorted(d)}
+
